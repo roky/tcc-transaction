@@ -16,9 +16,9 @@ public class TransactionXid implements Xid, Serializable {
 
     private int formatId = 1;
 
-    private byte[] globalTransactionId;
+    private byte[] globalTransactionId;//全局事务编号
 
-    private byte[] branchQualifier;
+    private byte[] branchQualifier;//分支事务编号
 
     public TransactionXid() {
         globalTransactionId = uuidToByteArray(UUID.randomUUID());

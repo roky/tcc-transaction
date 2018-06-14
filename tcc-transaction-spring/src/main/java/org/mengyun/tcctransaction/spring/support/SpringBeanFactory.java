@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import java.util.Map;
 
-/**
+/**   实现 ApplicationContextAware 接口 ，保存自己的上下文
  * Created by changmingxie on 11/22/15.
  */
 public class SpringBeanFactory implements BeanFactory, ApplicationContextAware {

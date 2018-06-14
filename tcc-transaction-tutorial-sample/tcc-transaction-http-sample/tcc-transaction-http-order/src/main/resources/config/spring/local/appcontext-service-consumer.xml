@@ -18,7 +18,7 @@
           class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager">
         <property name="params">
             <bean class="org.apache.commons.httpclient.params.HttpConnectionManagerParams">
-                <property name="connectionTimeout" value="2000"/>
+                <property name="connectionTimeout" value="200000"/>
                 <property name="maxTotalConnections" value="600"/>
                 <property name="defaultMaxConnectionsPerHost" value="512"/>
                 <property name="soTimeout" value="5000"/>

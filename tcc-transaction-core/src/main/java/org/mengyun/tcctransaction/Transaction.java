@@ -21,40 +21,41 @@ public class Transaction implements Serializable {
 
     private static final long serialVersionUID = 7291423944314337931L;
 
-    private TransactionXid xid;
+    private TransactionXid xid;//事务编号
 
-    private TransactionStatus status;
+    private TransactionStatus status;//事务状态
 
-    private TransactionType transactionType;
+    private TransactionType transactionType;// 事务类型
 
-    private volatile int retriedCount = 0;
+    private volatile int retriedCount = 0;// 事重试次数。在 TCC 过程中，可能参与者异常崩溃，这个时候会进行重试直到成功或超过最大次数 在《TCC-Transaction 源码解析 —— 事务恢复》详细解析
 
-    private Date createTime = new Date();
+    private Date createTime = new Date();//创建时间
 
-    private Date lastUpdateTime = new Date();
+    private Date lastUpdateTime = new Date();//最后更新时间
 
-    private long version = 1;
+    private long version = 1;//版本号,用于乐观锁更新事务  在《TCC-Transaction 源码解析 —— 事务存储器》详细解析
 
-    private List<Participant> participants = new ArrayList<Participant>();
+    private List<Participant> participants = new ArrayList<Participant>();//参与者集合
 
-    private Map<String, Object> attachments = new ConcurrentHashMap<String, Object>();
+    private Map<String, Object> attachments = new ConcurrentHashMap<String, Object>();//附带属性映射 在《TCC-Transaction 源码解析 —— Dubbo 支持》
 
     public Transaction() {
 
     }
 
     public Transaction(TransactionContext transactionContext) {
-        this.xid = transactionContext.getXid();
-        this.status = TransactionStatus.TRYING;
-        this.transactionType = TransactionType.BRANCH;
+        this.xid = transactionContext.getXid();// 事务上下文的 xid
+        this.status = TransactionStatus.TRYING; // 尝试中状态
+        this.transactionType = TransactionType.BRANCH;// 分支事务
     }
 
+//创建指定类型的事务
     public Transaction(TransactionType transactionType) {
         this.xid = new TransactionXid();
-        this.status = TransactionStatus.TRYING;
+        this.status = TransactionStatus.TRYING;//尝试中状态
         this.transactionType = transactionType;
     }
-
+//添加参与者
     public void enlistParticipant(Participant participant) {
         participants.add(participant);
     }
@@ -81,14 +82,14 @@ public class Transaction implements Serializable {
         this.status = status;
     }
 
-
+//提交 TCC 事务
     public void commit() {
 
         for (Participant participant : participants) {
             participant.commit();
         }
     }
-
+//回滚 TCC 事务
     public void rollback() {
         for (Participant participant : participants) {
             participant.rollback();

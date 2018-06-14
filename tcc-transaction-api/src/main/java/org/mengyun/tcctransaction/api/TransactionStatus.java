@@ -21,11 +21,11 @@ public enum TransactionStatus {
 
         switch (id) {
             case 1:
-                return TRYING;
+                return TRYING;//尝试中状态
             case 2:
-                return CONFIRMING;
+                return CONFIRMING;//确认中状态
             default:
-                return CANCELLING;
+                return CANCELLING;//取消中状态
         }
     }
 

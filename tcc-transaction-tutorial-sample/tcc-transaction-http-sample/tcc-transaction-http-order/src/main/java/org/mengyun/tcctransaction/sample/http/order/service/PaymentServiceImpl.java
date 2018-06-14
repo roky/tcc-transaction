@@ -35,7 +35,7 @@ public class PaymentServiceImpl {
 
         //check if the order status is DRAFT, if no, means that another call makePayment for the same order happened, ignore this call makePayment.
         if (order.getStatus().equals("DRAFT")) {
-
+            // 更新订单状态为支付中
             order.pay(redPacketPayAmount, capitalPayAmount);
             try {
                 orderRepository.updateOrder(order);
@@ -43,8 +43,9 @@ public class PaymentServiceImpl {
                 //ignore the concurrently update order exception, ensure idempotency.
             }
         }
-
+        // 资金账户余额支付订单
         String result = tradeOrderServiceProxy.record(null, buildCapitalTradeOrderDto(order));
+        // 红包账户余额支付订单
         String result2 = tradeOrderServiceProxy.record(null, buildRedPacketTradeOrderDto(order));
     }
 
@@ -62,6 +63,7 @@ public class PaymentServiceImpl {
         Order foundOrder = orderRepository.findByMerchantOrderNo(order.getMerchantOrderNo());
 
         //check order status, only if the status equals DRAFT, then confirm order
+        // 更新订单状态为支付成功
         if (foundOrder != null && foundOrder.getStatus().equals("PAYING")) {
             order.confirm();
             orderRepository.updateOrder(order);
@@ -70,7 +72,7 @@ public class PaymentServiceImpl {
 
     public void cancelMakePayment(Order order, BigDecimal redPacketPayAmount, BigDecimal capitalPayAmount) {
 
-
+      // 调试用
         try {
             Thread.sleep(1000l);
         } catch (InterruptedException e) {
@@ -80,7 +82,7 @@ public class PaymentServiceImpl {
         System.out.println("order cancel make payment called.time seq:" + DateFormatUtils.format(Calendar.getInstance(), "yyyy-MM-dd HH:mm:ss"));
 
         Order foundOrder = orderRepository.findByMerchantOrderNo(order.getMerchantOrderNo());
-
+           // 更新订单状态为支付失败
         if (foundOrder != null && foundOrder.getStatus().equals("PAYING")) {
             order.cancelPayment();
             orderRepository.updateOrder(order);

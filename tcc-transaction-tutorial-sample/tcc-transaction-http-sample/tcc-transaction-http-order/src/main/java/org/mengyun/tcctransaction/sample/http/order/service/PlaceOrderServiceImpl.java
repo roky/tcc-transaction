@@ -30,12 +30,13 @@ public class PlaceOrderServiceImpl {
 
 
     public String placeOrder(long payerUserId, long shopId, List<Pair<Long, Integer>> productQuantities, BigDecimal redPacketPayAmount) {
+        // 获取商店
         Shop shop = shopRepository.findById(shopId);
-
+      // 创建订单  创建订单状态为 "DRAFT"
         Order order = orderService.createOrder(payerUserId, shop.getOwnerUserId(), productQuantities);
 
         Boolean result = false;
-
+       // 发起支付
         try {
             paymentService.makePayment(order, redPacketPayAmount, order.getTotalAmount().subtract(redPacketPayAmount));
 

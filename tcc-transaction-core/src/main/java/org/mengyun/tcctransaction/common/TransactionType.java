@@ -23,9 +23,9 @@ public enum TransactionType {
     public static TransactionType valueOf(int id) {
         switch (id) {
             case 1:
-                return ROOT;
+                return ROOT;//根事务
             case 2:
-                return BRANCH;
+                return BRANCH;//分支事务
             default:
                 return null;
         }
